@@ -4,6 +4,9 @@ import threading
 from collections import queue, deque
 
 """
+Enunciado:
+Modela un sistema de colas que permita retrabajos. Implementa un mecanismo en el que los clientes que no fueron atendidos correctamente puedan regresar al final de la cola. Calcula el impacto en el tiempo promedio en el sistema y la tasa de retrabajos.
+
 Consideraciones:
 - Al tener que implementar los retrabajos es necesario tener en cuenta 
 una desicion aleatoria que indique si fue atendido correctamente o no para volver a la cola
@@ -41,16 +44,3 @@ class Cola:
   
     def size(self):
         return len(self.buffer)
-  
-# class cola:
-#   def __init__(self):
-#     self.items = []
-  
-#   def encolar(self, item):
-#     self.items.insert(0, item)
-  
-#   def desencolar(self):
-#     return self.items.pop()
-  
-#   def esta_vacia(self):
-#     return len(self.items) == 0
