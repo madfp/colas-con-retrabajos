@@ -45,6 +45,20 @@ Install all the dependencies of the project:
 
 ## Usage
 
+To run the project, you can use the following command:
+
+```sh
+  python main.py
+```
+
+Or using flet:
+
+```sh
+  flet run ./src/main.py
+```
+
+The project will start and you will see a window with the GUI of the queue system. You can create a simulation by entering the data you want for the queue system parameters, or you can generate a simulation using random data.
+
 ## Contributing
 
-## License
+If you want to contribute to this project, you can fork it and create a pull request with your changes. I will review it and merge it if it is necessary. If you have any questions, you can contact me by email.

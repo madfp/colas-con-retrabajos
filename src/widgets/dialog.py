@@ -10,7 +10,6 @@ class Dialog:
             TextButton("Close", on_click=self.close_dlg),
         ],
         actions_alignment=MainAxisAlignment.END,
-        on_dismiss=lambda e: print("Modal dialog dismissed!"),
     )
 
   def close_dlg(self, e):

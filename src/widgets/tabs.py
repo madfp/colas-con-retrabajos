@@ -1,12 +1,34 @@
-from flet import Tabs, icons, Column, Dropdown, Container, alignment, Text, Tab, dropdown, TextField, FilledButton, Row
+from flet import Tabs, icons, Column, Dropdown, Container, alignment, Text, Tab, dropdown, TextField, FilledButton, ElevatedButton, Row
 
 class TabWidget:
   def __init__(self, page):
     self.page= page
-    self.tipo = ""
-    self.cantidad_maxima = ""
-    self.numero_clientes = ""
-    self.tiempo_service = ""
+
+    """ Input fields """
+    self.tipo_dropdown = Dropdown(
+        label="Estrategia de la cola",
+        hint_text="Elige el metodo de la cola",
+        options=[
+            dropdown.Option("FIFO"),
+            dropdown.Option("LIFO"),
+        ],
+    )
+
+    self.clientes_input = TextField(
+      label="Tiempo de llegada promedio por cliente",
+    )
+
+    self.tiempo_servicio_input = TextField(
+      label="Tiempo de servicio promedio por cliente",
+    )
+
+    self.tiempo_simulacion_input = TextField(
+      label="Tiempo de la simulacion",
+    )
+
+    self.cantidad_cola_input = TextField(
+      label="Cantidad máxima de la cola",
+    )
     
     self.tabs = Tabs(
             expand=True,
@@ -22,36 +44,18 @@ class TabWidget:
                             [
                                 Row(
                                   [
-                                    Dropdown(
-                                        label="Metodo de la cola",
-                                        hint_text="Elige el metodo de la cola",
-                                        on_change= self.tipo_on_change,
-                                        options=[
-                                            dropdown.Option("FIFO"),
-                                            dropdown.Option("LIFO"),
-                                        ],
-                                    ), 
-                                    TextField(
-                                        label="Cantidad máxima de la cola",
-                                        on_change= self.cantidad_maxima_on_change
-                                    )
+                                    self.tipo_dropdown,
+                                    self.cantidad_cola_input
                                   ]
                                 ),
-                                TextField(
-                                  label="Número de clientes",
-                                  on_change= self.numero_clientes_on_change
-                                ),TextField(
-                                  label="Tiempo de servicio promedio por cliente",
-                                  on_change= self.tiempo_service_on_change
-                                ),TextField(
-                                  label="Tiempo de la simulacion",
-                                  on_change= self.tiempo_service_on_change
-                                ),
+                                  self.clientes_input,
+                                  self.tiempo_servicio_input,
+                                  self.tiempo_simulacion_input,
                                 Row(
                                     [
                                         FilledButton(text="Iniciar simulación", on_click=self.start),
                                         FilledButton(text="Simulación aleatoria"),
-                                        FilledButton(text="Limpiar valores"),
+                                        ElevatedButton(text="Limpiar valores", on_click=self.clear_values),
                                     ]
                                 ),
                             ]
@@ -74,33 +78,37 @@ class TabWidget:
                 ),
             ],
         )
-  
-  def tipo_on_change(self, e):
-    self.tipo = e.control.value
-    self.page.update()
 
-  def cantidad_maxima_on_change(self, e):
-    self.cantidad_maxima = e.control.value
-    self.page.update()
   
-  def numero_clientes_on_change(self, e):
-    self.numero_clientes = e.control.value
-    self.page.update()
-  
-  def tiempo_service_on_change(self, e):
-    self.tiempo_service = e.control.value
-    self.page.update()
 
   def start(self, e):
-    if self.tipo == "" or self.cantidad_maxima == "" or self.numero_clientes == "" or self.tiempo_service =="":
+    if self.tipo_dropdown.value == "" or self.cantidad_cola_input.value == "" or self.clientes_input.value == "" or self.tiempo_servicio_input.value =="" or self.tiempo_simulacion_input.value =="":
       print("No se puede iniciar la simulación, faltan datos...")
     else:
       print("Iniciando simulación")
-      print(self.tiempo_service)
-      print(self.numero_clientes)
-      print(self.tipo)
-      print(self.cantidad_maxima)
+      print("Modalidad de la cola: " + self.tipo_dropdown.value)
+      print("Tiempo promedio de llegada por cliente: " + self.clientes_input.value)
+      print("Tiempo de servicio promedio por cliente: "+self.tiempo_servicio_input.value)
+      print("Cantidad maxima de clientes en la cola: "+self.cantidad_cola_input.value)
+      print("Tiempo de la simulacion: "+self.tiempo_simulacion_input.value) 
+      self.disabling_inputs(True)
+      self.page.update()
 
+  def clear_values(self, e):
+    self.tipo_dropdown.value = ""
+    self.clientes_input.value = ""
+    self.tiempo_servicio_input.value = ""
+    self.cantidad_cola_input.value = ""
+    self.tiempo_simulacion_input.value = "" 
+    self.disabling_inputs(False)
+    self.page.update()
+
+  def disabling_inputs(self, value):
+    self.tipo_dropdown.disabled = value    
+    self.clientes_input.disabled = value
+    self.tiempo_servicio_input.disabled = value
+    self.cantidad_cola_input.disabled = value
+    self.tiempo_simulacion_input.disabled = value
     
   def build(self):
     return self.tabs
