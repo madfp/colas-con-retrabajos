@@ -1,7 +1,8 @@
 """ Algoritmos de colas (FIFO y LIFO)"""
-import queue
-import threading
-from collections import queue, deque
+import asyncio
+import random
+import time
+import simpy
 
 """
 Enunciado:
@@ -12,35 +13,64 @@ Consideraciones:
 una desicion aleatoria que indique si fue atendido correctamente o no para volver a la cola
 - Tener en la interfaz la opcion de elegir la modalidad de la cola
 
-Elemenetos / metodos:
-- Enqueue
-- Dequeue
-- Front
-- Rear
+Datos necesarios:
+- Cantidad maxima de clientes
+- Tiempo de servicio promedio por cliente
+- Tiempo de llegada promedio de los clientes
 
-maxsize – Number of items allowed in the queue.
-empty() – Return True if the queue is empty, False otherwise.
-full() – Return True if there are maxsize items in the queue. If the queue was initialized with maxsize=0 (the default), then full() never returns True.
-get() – Remove and return an item from the queue. If queue is empty, wait until an item is available.
-get_nowait() – Return an item if one is immediately available, else raise QueueEmpty.
-put(item) – Put an item into the queue. If the queue is full, wait until a free slot is available before adding the item.
-put_nowait(item) – Put an item into the queue without blocking. If no free slot is immediately available, raise QueueFull.
-qsize() – Return the number of items in the queue.
+- Tiempo promedio en el sistema
+- Tasa de retrabajos (cantidad de retrabajos / cantidad de clientes atendidos)
+
+
+- Numero de clientes en el sistema
+- Longitud de la cola
+- Numero de servidores en el sistema 
+- tasa de llegadas, numero de llegadas por unidad de tiempo
 """
 
-# clase de la cola
-class Cola:
-    def __init__(self):
-        self.buffer = deque()
-    
-    def enqueue(self, item):
-        self.buffer.append(item)
-    
-    def dequeue(self):
-        return self.buffer.popleft()
-    
-    def is_empty(self):
-        return len(self.buffer) == 0
+# import simpy
+
+# def proceso_cliente(env, nombre):
+#   """Función que simula el proceso de un cliente."""
+#   # Llega a la cola con cola:
+#   print(f"{nombre} llega a la cola en {env.now}")
+#   yield cola.put(nombre)
   
-    def size(self):
-        return len(self.buffer)
+#   # Espera en la cola
+#   #tiempo_espera = env.now - con.arrival_time
+#   #print(f"{nombre} espera en la cola {tiempo_espera:.2f} segundos")
+  
+#   # Es atendido por un servidor
+#   print(f"{nombre} comienza a ser atendido en {env.now}")
+#   yield env.process(servidor.serve())
+#   print(f"{nombre} termina de ser atendido en {env.now}")
+  
+#   # ¿Re-trabajo necesario?
+#   if random.random() < probabilidad_rechazo:
+#     print(f"{nombre} necesita retrabajo")
+#     yield env.process(proceso_cliente(env, nombre))
+#   else:
+#     print(f"{nombre} sale del sistema en {env.now}")
+
+# # Parámetros del sistema
+# capacidad_cola = 10  # Capacidad máxima de la cola
+# numero_servidores = 2  # Número de servidores
+# tiempo_medio_servicio = 5  # Tiempo medio de servicio
+# desviacion_estandar_servicio = 2  # Desviación estándar del tiempo de servicio
+# probabilidad_rechazo = 0.2  # Probabilidad de retrabajo
+# tiempo_medio_rechazo = 3  # Tiempo medio de retrabajo
+# desviacion_estandar_rechazo = 1  # Desviación estándar del tiempo de retrabajo
+
+# # Crear el entorno de SimPy
+# env = simpy.Environment()
+
+# # Crear la cola y los servidores
+# cola = simpy.Store(env, capacity=capacidad_cola)
+# servidor = simpy.Resource(env, capacity=numero_servidores)
+
+# # Generar clientes
+# for i in range(100):
+#   env.process(proceso_cliente(env, f"Cliente {i+1}"))
+
+# # Ejecutar la simulación
+# env.run()

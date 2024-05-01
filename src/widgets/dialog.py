@@ -1,4 +1,4 @@
-from flet import AlertDialog, Text, MainAxisAlignment, ElevatedButton, TextButton
+from flet import AlertDialog, Text, MainAxisAlignment, TextButton
 class Dialog:
   def __init__(self, title, message, page):
     self.page = page

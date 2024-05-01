@@ -17,7 +17,7 @@ class Window:
         self.menubar = menubar.Menubar(page=self.page)
 
         """ Tabs """
-        self.tabs = tabs.TabWidget()
+        self.tabs = tabs.TabWidget(self.page)
         
         """ Adding elements to the page """
         page.add(
