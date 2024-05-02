@@ -1,10 +1,10 @@
-from flet import AlertDialog, Text, MainAxisAlignment, TextButton
+from flet import AlertDialog, Text, MainAxisAlignment, TextButton, FontWeight
 class Dialog:
   def __init__(self, title, message, page):
     self.page = page
     self.dlg_modal = AlertDialog(
         modal=True,
-        title=Text(title),
+        title=Text(title, weight=FontWeight.W_800),
         content=Text(message),
         actions=[
             TextButton("Close", on_click=self.close_dlg),

@@ -1,8 +1,22 @@
-from flet import Tabs, icons, Column, Dropdown, Container, alignment, Text, Tab, dropdown, TextField, FilledButton, ElevatedButton, Row
+from flet import Tabs, icons, Column, Dropdown, Container, Text, Tab, dropdown, TextField, FilledButton, ElevatedButton, Row
+from .dialog import Dialog
+import random
 
+# Tab widget class
 class TabWidget:
-  def __init__(self, page):
-    self.page= page
+  # Constructor
+  def __init__(self, page, ):
+    # Valor de la instancia de la pagina
+    self.page= page  
+    self.dlg_modal = Dialog(page=self.page, title="Warning...", message="If you want to simulate the system, you must enter the data first. Please fill in the fields or use the random values button.")
+    
+    # Datos para la simulacion
+    self.servidores = 0
+    self.tiempo_servicio = 0
+    self.intervalo_llegada = 0
+    self.simulacion_tiempo = 0
+    self.clientes_atendidos = 0
+    self.clientes_no_satisfechos = 0
 
     """ Input fields """
     self.tipo_dropdown = Dropdown(
@@ -14,28 +28,30 @@ class TabWidget:
         ],
     )
 
-    self.clientes_input = TextField(
-      label="Tiempo de llegada promedio por cliente",
+    self.tiempo_atencion = TextField(
+      label="Tiempo de atencion promedio",
     )
 
-    self.tiempo_servicio_input = TextField(
-      label="Tiempo de servicio promedio por cliente",
+    self.intervalo_llegada = TextField(
+      label="Tiempo intervalo de llegada de clientes",
     )
 
-    self.tiempo_simulacion_input = TextField(
+    self.tiempo_simulacion = TextField(
       label="Tiempo de la simulacion",
     )
 
-    self.cantidad_cola_input = TextField(
-      label="Cantidad máxima de la cola",
+    self.servers = TextField(
+      label="Cantidad de servidores",
     )
-    
+
+    # Atribute tabs widget
     self.tabs = Tabs(
             expand=True,
             selected_index=0,
             animation_duration=300,
             tabs=[
                 Tab(
+                    # Tab - Data loading
                     text="Data",
                     icon=icons.DATA_USAGE,
                     content=Container(
@@ -45,16 +61,16 @@ class TabWidget:
                                 Row(
                                   [
                                     self.tipo_dropdown,
-                                    self.cantidad_cola_input
+                                    self.servers
                                   ]
                                 ),
-                                  self.clientes_input,
-                                  self.tiempo_servicio_input,
-                                  self.tiempo_simulacion_input,
+                                  self.tiempo_atencion,
+                                  self.intervalo_llegada,
+                                  self.tiempo_simulacion,
                                 Row(
                                     [
-                                        FilledButton(text="Iniciar simulación", on_click=self.start),
-                                        FilledButton(text="Simulación aleatoria"),
+                                        FilledButton(text="Guardar valores", on_click=self.start),
+                                        FilledButton(text="Valores aleatorios", on_click=self.random_simulation),
                                         ElevatedButton(text="Limpiar valores", on_click=self.clear_values),
                                     ]
                                 ),
@@ -63,52 +79,78 @@ class TabWidget:
                     )
                 ),
                 Tab(
-                    text="Charts",
-                    icon=icons.GRAPHIC_EQ,
-                    content=Container(
-                        content=Text("This is Tab 2"), alignment=alignment.center
-                    ),
-                ),
-                Tab(
-                    text="Simulation",
-                    icon=icons.WAVES,
-                    content=Container(
-                        content=Text("This is Tab 3"), alignment=alignment.center
-                    ),
-                ),
+                  # Tab - Simulation
+                  text="Simulation",
+                  icon=icons.WAVES,
+                  content= Column(
+                    [
+                      Container(
+                        content= Row(
+                          [
+                            Text("Clientes atendidos: "+str(self.clientes_atendidos)),
+                            Text("Clientes no satisfechos: "+str(self.clientes_no_satisfechos))
+                          ]
+                        ),
+                        margin=20
+                      ),
+                    ]
+                  )
+                )
             ],
         )
 
   
-
+  # Starting simulation method
   def start(self, e):
-    if self.tipo_dropdown.value == "" or self.cantidad_cola_input.value == "" or self.clientes_input.value == "" or self.tiempo_servicio_input.value =="" or self.tiempo_simulacion_input.value =="":
-      print("No se puede iniciar la simulación, faltan datos...")
+    if self.tipo_dropdown.value == "" or self.servers.value == "" or self.tiempo_atencion.value == "" or self.intervalo_llegada.value =="" or self.tiempo_simulacion.value =="":
+      # Warning message dialog
+      self.dlg_modal.open_dlg_modal(e)
     else:
-      print("Iniciando simulación")
-      print("Modalidad de la cola: " + self.tipo_dropdown.value)
-      print("Tiempo promedio de llegada por cliente: " + self.clientes_input.value)
-      print("Tiempo de servicio promedio por cliente: "+self.tiempo_servicio_input.value)
-      print("Cantidad maxima de clientes en la cola: "+self.cantidad_cola_input.value)
-      print("Tiempo de la simulacion: "+self.tiempo_simulacion_input.value) 
+      self.showing_values()
       self.disabling_inputs(True)
       self.page.update()
 
+  # Clearing input values method
   def clear_values(self, e):
     self.tipo_dropdown.value = ""
-    self.clientes_input.value = ""
-    self.tiempo_servicio_input.value = ""
-    self.cantidad_cola_input.value = ""
-    self.tiempo_simulacion_input.value = "" 
+    self.tiempo_atencion.value = ""
+    self.intervalo_llegada.value = ""
+    self.servers.value = ""
+    self.tiempo_simulacion.value = "" 
+    # Enabling inputs
     self.disabling_inputs(False)
     self.page.update()
 
+  # Random simulation
+  def random_simulation(self, e):
+    self.tipo_dropdown.value = ["FIFO", "LIFO"][int(random.randint(0, 1))]
+    self.tiempo_atencion.value = str(random.randint(1, 10))
+    self.intervalo_llegada.value = str(random.randint(1, 10))
+    self.servers.value = str(random.randint(1, 10))
+    self.tiempo_simulacion.value = str(random.randint(1, 10))
+    self.showing_values()
+    # Disabling inputs
+    self.disabling_inputs(True)      
+    self.page.update()
+
+  # Disabling inputs method
   def disabling_inputs(self, value):
     self.tipo_dropdown.disabled = value    
-    self.clientes_input.disabled = value
-    self.tiempo_servicio_input.disabled = value
-    self.cantidad_cola_input.disabled = value
-    self.tiempo_simulacion_input.disabled = value
-    
+    self.tiempo_atencion.disabled = value
+    self.intervalo_llegada.disabled = value
+    self.servers.disabled = value
+    self.tiempo_simulacion.disabled = value
+
+  # Showing values method
+  def showing_values(self):
+    print("+--------------------------------+")
+    print("|Estrategia de la cola: " + self.tipo_dropdown.value)
+    print("|Cantidad de servidores: "+self.servers.value)
+    print("|Tiempo promedio de atencion: " + self.tiempo_atencion.value)
+    print("|Intervalo de llegada de clientes: "+self.intervalo_llegada.value)
+    print("|Tiempo de la simulacion: "+self.tiempo_simulacion.value) 
+    print("+--------------------------------+")
+  
+  # Build method (returning the tabs widget)
   def build(self):
     return self.tabs

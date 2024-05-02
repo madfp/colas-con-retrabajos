@@ -1,31 +1,42 @@
 from widgets import menubar, tabs
-import flet as ft
+from flet import Page, MainAxisAlignment, Column, Row, app
 
+# Window class
 class Window:
-    # constructor de la ventana
-    def __init__(self, page: ft.Page):
-        """ Window settings """
+    # window constructor
+    def __init__(self, page):
+        # Valor de la instancia de la pagina
         self.page = page
-        page.window_center() # Align window to center
-        page.window_width = 700 # Set window width
-        page.window_height = 500 # Set window height
-        page.window_resizable = False # Disable window resizing
-        page.title = "Colas con retrabajos" # Set window title
-        page.vertical_alignment = ft.MainAxisAlignment.START # Setting up the window alignment
-        
+
         """ MenuBar """
         self.menubar = menubar.Menubar(page=self.page)
 
         """ Tabs """
         self.tabs = tabs.TabWidget(self.page)
-        
-        """ Adding elements to the page """
-        page.add(
-            ft.Row(
-                # Adding the menubar to the page
-                [self.menubar.build()],
-            ),self.tabs.build()
+
+    # Window build function
+    def build(self):
+        return Column(
+            [
+                Row(
+                    # Adding the menubar to the page
+                    [self.menubar.build()],
+                ),self.tabs.build()
+            ]
         )
 
+# Main function - Window setup
+def main(page: Page):
+    window = Window(page)
+    page.window_center() # Align window to center
+    page.window_width = 700 # Set window width
+    page.window_height = 500 # Set window height
+    page.window_maximizable = False # Disable window maximizable
+    page.window_resizable = False # Disable window resizable
+    page.title = "Colas con retrabajos" # Set window title
+    page.vertical_alignment = MainAxisAlignment.START # Setting up the window alignment
+    page.add(window.build())
+
+# Entry point
 if __name__ == "__main__":
-    ft.app(Window)
+    app(target=main)
