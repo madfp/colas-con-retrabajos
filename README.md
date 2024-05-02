@@ -1,4 +1,4 @@
-# Queues-with-rework
+# Queues with rework
 
 This project is a model of a queue system that allows for rework.
 The objective is to create a minimalistic GUI, that allows the user to create queues (following FIFO or LIFO metodologies), with rework (if the client is randomnly not well attended, will be right back at the queue).
