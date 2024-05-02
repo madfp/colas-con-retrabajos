@@ -1,30 +1,62 @@
-from flet import Container, Text, Column, ElevatedButton
+from flet import Container, Column, ElevatedButton, ScrollMode
+from .dialog import Dialog
+from helpers.queues import Simulation
+from .item import ItemWidget
 
 class SimulationContainer:
-  def __init__(self, page, modalidad, servidores, tiempo_servicio, intervalo_llegada, simulacion_tiempo):
+  def __init__(self, page):
     super().__init__()
+    self.simulation = Simulation() # Inicializar la instancia para la cola
+    self.dlg_modal = Dialog(
+      page=page, 
+      title="Warning...", 
+      message="""If you want to simulate the system, you must enter the data first.
+      - Please fill in the fields or use the random values button.
+      - Make sure the fields are not empty.
+      - Make sure the fields are numeric values.
+      - Make sure the fields are not negative values.""")
     self.page = page
-    self.modalidad = modalidad
-    self.servidores = servidores
-    self.tiempo_servicio = tiempo_servicio
-    self.intervalo_llegada = intervalo_llegada
-    self.simulacion_tiempo = simulacion_tiempo
+    self.modalidad = ""
+    self.servidores = 0
+    self.tiempo_servicio = 0
+    self.intervalo_llegada = 0
+    self.simulacion_tiempo = 0
+    
+    self.items = []
+    # Contenedor donde se iran agregando los valores de la cola
+    self.contenedor = Container(
+      content = Column(
+          self.items,
+          scroll=ScrollMode.ALWAYS,
+          height=280,
+        ),
+      margin=10,
+    )
 
   def build(self):
     return Container(
       content= Column(
         [
-          Text("Simulation"),
+          self.contenedor,
           ElevatedButton(text="Start simulation", on_click=self.start_simulation)
         ]
       ),
       expand=False,
     )
-  
 
   # INICIO DE LA SIMULACION - COLA
   def start_simulation(self, e):
-    print(self.modalidad, self.intervalo_llegada, self.servidores, self.simulacion_tiempo, self.tiempo_servicio)
+    if self.modalidad == 0 or self.servidores == 0 or self.tiempo_servicio == 0 or self.intervalo_llegada == 0 or self.simulacion_tiempo == 0:
+      self.dlg_modal.open_dlg_modal(e)
+    else:
+      print("Iniciando simulacion")
+      print("Modalidad: ", self.modalidad)
+      print("Servidores: ", self.servidores)
+      print("Tiempo de servicio: ", self.tiempo_servicio)
+      print("Intervalo de llegada: ", self.intervalo_llegada)
+      print("Tiempo de simulacion: ", self.simulacion_tiempo)
+      # Correr la simulacion
+      self.simulation.simulate(self.addItem, int(self.servidores), int(self.tiempo_servicio), int(self.intervalo_llegada), int(self.simulacion_tiempo))
     self.page.update()
 
   def update_data(self, values):
@@ -34,43 +66,9 @@ class SimulationContainer:
     self.intervalo_llegada = values.get("intervalo_llegada")
     self.simulacion_tiempo = values.get("tiempo_simulacion")
 
+  def addItem(self, number):
+    self.items.append(ItemWidget(self.page, number).build())
+    self.page.update()
 
-"""
-self.chart = Chart()
-    self.container = Container(
-      content= Row(
-        [
-          Text("Charts"),
-          self.chart.build()
-        ]
-      ),
-      expand=False,
-    )
-
-##############################
-    
-import matplotlib
-import matplotlib.pyplot as plt
-from flet.matplotlib_chart import MatplotlibChart
-
-matplotlib.use("svg")
-
-
-class Chart():
-  def __init__(self, ):
-    self.fig, self.ax = plt.subplots()
-
-    data = ["Tiempo promedio", "Tasa de retrabajo"]
-    counts = [40, 100]
-    bar_labels = ["red", "blue"]
-    bar_colors = ["tab:red", "tab:blue"]
-
-    self.ax.bar(data, counts, label=bar_labels, color=bar_colors)
-
-    self.ax.set_ylabel("Quantity")
-    self.ax.set_title("Average time and rework rate")
-    self.ax.legend(title="Parameters")
-
-  def build(self):
-    return MatplotlibChart(self.fig)
-"""
+  def updateItems(self):
+    self.page.update()

@@ -1,3 +1,11 @@
+"""
+Modela un sistema de colas que permita retrabajos.
+Implementa un mecanismo en el que los clientes que no fueron atendidos correctamente puedan regresar al final de la cola.
+
+Calcular: 
+- Impacto en el tiempo promedio del sistema
+- Tasa de retrabajos
+"""
 from widgets import menubar, tabs
 from flet import Page, MainAxisAlignment, Column, Row, app
 
@@ -35,6 +43,7 @@ def main(page: Page):
     page.window_resizable = False # Disable window resizable
     page.title = "Colas con retrabajos" # Set window title
     page.vertical_alignment = MainAxisAlignment.START # Setting up the window alignment
+    page.scroll = ""
     page.add(window.build())
 
 # Entry point

@@ -1,6 +1,7 @@
-from flet import Tabs, icons, Column, Container, Tab
+from flet import Tabs, icons, Column, Container, Tab, Row
 from widgets.data_container import DataContainer
 from widgets.simulation_container import SimulationContainer
+from widgets.chart import Chart
 
 # Tab widget class
 class TabWidget:
@@ -18,11 +19,18 @@ class TabWidget:
     self.clientes_atendidos = 0
     self.clientes_no_satisfechos = 0
     
-    # DataContainer
+    # Data container
     self.data_container = DataContainer(self.page, self.get_data_from_first_tab)
     
-    # SimulationContainer
-    self.simulation_container = SimulationContainer(self.page, self.modalidad, self.servidores, self.tiempo_servicio, self.intervalo_llegada, self.simulacion_tiempo)
+    # Simulation container
+    self.simulation_container = SimulationContainer(self.page)
+
+    # Chart container
+    self.chart = Chart()
+    self.container = Container(
+      content=self.chart.build(),
+      expand=True,
+    )
 
     # Atribute tabs widget
     self.tabs = Tabs(
@@ -50,7 +58,16 @@ class TabWidget:
                       ),
                     ]
                   )
-                )
+                ),
+                Tab(
+                    # Tab - Chart
+                    text="Results chart",
+                    icon=icons.GRAPHIC_EQ,
+                    content=Container(
+                        margin=20,
+                        content= self.chart.build()
+                    )
+                ),
             ],
         )
   
