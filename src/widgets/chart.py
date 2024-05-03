@@ -4,7 +4,6 @@ from flet.matplotlib_chart import MatplotlibChart
 
 matplotlib.use("svg")
 
-
 class Chart():
   def __init__(self):
     self.fig, self.ax = plt.subplots()

@@ -36,7 +36,7 @@ class Window:
 # Main function - Window setup
 def main(page: Page):
     window = Window(page)
-    page.window_center() # Align window to center
+    page.window_center() # Align the window to the center
     page.window_width = 700 # Set window width
     page.window_height = 500 # Set window height
     page.window_maximizable = False # Disable window maximizable
