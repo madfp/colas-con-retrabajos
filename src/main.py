@@ -1,11 +1,3 @@
-"""
-Modela un sistema de colas que permita retrabajos.
-Implementa un mecanismo en el que los clientes que no fueron atendidos correctamente puedan regresar al final de la cola.
-
-Calcular: 
-- Impacto en el tiempo promedio del sistema
-- Tasa de retrabajos
-"""
 from widgets import menubar, tabs
 from flet import Page, MainAxisAlignment, Column, Row, app
 

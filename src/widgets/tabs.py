@@ -1,10 +1,9 @@
 from flet import Tabs, icons, Column, Container, Tab, Row
 from widgets.data_container import DataContainer
 from widgets.simulation_container import SimulationContainer
-from widgets.chart import Chart
 
 # Tab widget class
-class TabWidget:
+class TabWidget(Tabs):
   # Constructor
   def __init__(self, page):
     # Valor de la instancia de la pagina
@@ -24,13 +23,6 @@ class TabWidget:
     
     # Simulation container
     self.simulation_container = SimulationContainer(self.page)
-
-    # Chart container
-    self.chart = Chart()
-    self.container = Container(
-      content=self.chart.build(),
-      expand=True,
-    )
 
     # Atribute tabs widget
     self.tabs = Tabs(
@@ -58,16 +50,7 @@ class TabWidget:
                       ),
                     ]
                   )
-                ),
-                Tab(
-                    # Tab - Chart
-                    text="Results chart",
-                    icon=icons.GRAPHIC_EQ,
-                    content=Container(
-                        margin=20,
-                        content= self.chart.build()
-                    )
-                ),
+                )
             ],
         )
   

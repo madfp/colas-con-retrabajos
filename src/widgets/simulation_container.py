@@ -14,7 +14,8 @@ class SimulationContainer:
       - Please fill in the fields or use the random values button.
       - Make sure the fields are not empty.
       - Make sure the fields are numeric values.
-      - Make sure the fields are not negative values.""")
+      - Make sure the fields are not negative values."""
+    )
     self.page = page
     #self.modalidad = ""
     self.servidores = 0
